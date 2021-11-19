@@ -22,9 +22,10 @@ func FindItemInSlice(slice []byte, val byte) bool {
 	return false
 }
 
-func initFlags() {
+func initFlags() passwgen.PasswGen {
 
-	var characters *string = flag.StringP("characters", "c", "aA1!", "Type of characters on the password")
+	// Create the flags of the program
+	var characters *string = flag.StringP("characters", "c", "1aA%", "Type of characters on the password")
 	var min *int = flag.IntP("min", "m", 8, "Minimum size of the password")
 	var max *int = flag.IntP("max", "M", 16, "Maximum size of the password")
 
@@ -40,22 +41,28 @@ func initFlags() {
 			pssgenType = pssgenType | passwgen.LowerLetter
 		} else if FindItemInSlice(passwgen.UpperLetterChars(), v) {
 			pssgenType = pssgenType | passwgen.UpperLetter
-		} else if FindItemInSlice(passwgen.SpecialLetterChars(), v) {
+		} else if FindItemInSlice(passwgen.SpecialChars(), v) {
 			pssgenType = pssgenType | passwgen.Special
 		}
 	}
+
+	if *min > *max {
+		*max = *min
+	}
+
 	passgen_instance := passwgen.PasswGen{
 		CharactersType: pssgenType,
 		MinSize:        *min,
 		MaxSize:        *max,
 	}
-	fmt.Println(passgen_instance)
 
-	Unused(characters, min, max, passgen_instance, pssgenType)
-
+	return passgen_instance
 }
 
 func main() {
 
-	initFlags()
+	passgen_instace := initFlags()
+
+	password := passgen_instace.Generate()
+	fmt.Printf("Generated password:\n%v\n", password)
 }

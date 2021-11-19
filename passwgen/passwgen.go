@@ -1,6 +1,10 @@
 package passwgen
 
-import "fmt"
+import (
+	"fmt"
+	"math/rand"
+	"time"
+)
 
 type PasswGenCharType int
 
@@ -39,7 +43,7 @@ func UpperLetterChars() []byte {
 		'Z'}
 }
 
-func SpecialLetterChars() []byte {
+func SpecialChars() []byte {
 	return []byte{
 		'!', '"', '#', '$', '%',
 		'&', '\'', '(', ')', '*',
@@ -56,6 +60,35 @@ type PasswGen struct {
 	MaxSize        int
 }
 
-func main() {
-	fmt.Printf("%v\n", SpecialLetterChars())
+func (psg PasswGen) Generate() string {
+
+	availableChars := []byte{}
+
+	if psg.CharactersType&Numeral != 0 {
+		availableChars = append(availableChars, NumeralChars()...)
+	}
+	if psg.CharactersType&UpperLetter != 0 {
+		availableChars = append(availableChars, LowerLetterChars()...)
+	}
+	if psg.CharactersType&LowerLetter != 0 {
+		availableChars = append(availableChars, UpperLetterChars()...)
+	}
+	if psg.CharactersType&Special != 0 {
+		availableChars = append(availableChars, SpecialChars()...)
+	}
+
+	fmt.Printf("Available characters: %c\n\n", availableChars)
+
+	rand.Seed(time.Now().UnixNano())
+
+	password_size := psg.MinSize + rand.Intn(psg.MaxSize-psg.MinSize+1)
+	fmt.Printf("Password size: %v\n\n", password_size)
+
+	password := make([]byte, password_size)
+
+	for i := range password {
+		password[i] = availableChars[rand.Intn(int(len(availableChars)))]
+	}
+
+	return string(password)
 }
