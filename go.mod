@@ -1,4 +1,4 @@
-module Bollos00/passwgen-go
+module github.com/Bollos00/passwgen-go
 
 go 1.17
 

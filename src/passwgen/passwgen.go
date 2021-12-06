@@ -54,15 +54,54 @@ func SpecialChars() []byte {
 		'}', '~', ' '}
 }
 
+func RemoveInSlice(slice []byte, index int) []byte {
+	slice[index] = slice[len(slice)-1]
+	return slice[:len(slice)-1]
+}
+
+func Unused(vals ...interface{}) {
+	for _, val := range vals {
+		_ = val
+	}
+}
+
+func FindItemInSlice(slice []byte, val byte) int {
+	for i, v := range slice {
+		if v == val {
+			return i
+		}
+	}
+
+	return -1
+}
+
 type PasswGen struct {
 	CharactersType PasswGenCharType
 	MinSize        int
 	MaxSize        int
+	IgnoredChars   []byte
+}
+
+func (psg PasswGen) Validate() PasswGen {
+	if psg.MinSize <= 0 || psg.MaxSize <= 0 {
+		fmt.Printf("The size of the password should be a positive integrer.\n")
+		fmt.Printf("Changing the password length to a random number between 8 and 16.\n\n")
+		psg.MinSize = 8
+		psg.MaxSize = 16
+	}
+	if psg.CharactersType == None {
+		fmt.Printf("No valid characters to the password found. Changing to default.\n\n")
+		psg.CharactersType = Numeral | UpperLetter | LowerLetter | Special
+	}
+
+	return psg
 }
 
 func (psg PasswGen) Generate() string {
 
 	availableChars := []byte{}
+
+	psg = psg.Validate()
 
 	if psg.CharactersType&Numeral != 0 {
 		availableChars = append(availableChars, NumeralChars()...)
@@ -75,6 +114,13 @@ func (psg PasswGen) Generate() string {
 	}
 	if psg.CharactersType&Special != 0 {
 		availableChars = append(availableChars, SpecialChars()...)
+	}
+
+	for _, v := range psg.IgnoredChars {
+		index := FindItemInSlice(availableChars, v)
+		if index != -1 {
+			availableChars = RemoveInSlice(availableChars, index)
+		}
 	}
 
 	fmt.Printf("Available characters: %c\n\n", availableChars)
