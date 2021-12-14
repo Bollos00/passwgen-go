@@ -25,8 +25,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/Bollos00/passwgen-go/src/passwgen"
 	flag "github.com/ogier/pflag"
 )
@@ -40,9 +38,10 @@ func initFlags() passwgen.PasswGen {
 	var max *int = flag.IntP("max", "M", 16, "Maximum size of the password")
 	var length *int = flag.IntP("length", "l", -1,
 		"Fixed length of the password (overwrites 'min' and 'max' flags)")
-
 	var ignoredChars *string = flag.StringP("ignored", "i", "",
 		"Characters ignored in the creation of the password")
+	var copyClipboard *bool = flag.BoolP("clipboard", "C", false,
+		"Copy the generated password to the clipboard and do not print it")
 
 	flag.Parse()
 
@@ -76,6 +75,7 @@ func initFlags() passwgen.PasswGen {
 		MinSize:        *min,
 		MaxSize:        *max,
 		IgnoredChars:   []byte(*ignoredChars),
+		CopyClipboard:  *copyClipboard,
 	}
 
 	return passgen_instance
@@ -85,6 +85,7 @@ func main() {
 
 	passgen_instace := initFlags()
 
-	password := passgen_instace.Generate()
-	fmt.Printf("Generated password:\n%v\n", password)
+	passgen_instace.Generate()
+	// password := passgen_instace.Generate()
+	// fmt.Printf("Generated password:\n%v\n", password)
 }
