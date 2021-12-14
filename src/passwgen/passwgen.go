@@ -164,7 +164,11 @@ func (psg PasswGen) Generate() string {
 	}
 
 	if psg.CopyClipboard {
-		clipboard.WriteAll(string(password))
+		if err := clipboard.WriteAll(string(password)); err == nil {
+			fmt.Printf("Successfully copied the password to the clipboard.\n\n")
+		} else {
+			fmt.Printf("Error when trying to copy the password to the clipboard\n%v", err.Error())
+		}
 	} else {
 		fmt.Printf("Generated password:\n%v\n", string(password))
 	}
