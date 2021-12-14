@@ -28,6 +28,8 @@ import (
 	"fmt"
 	"math/rand"
 	"time"
+
+	"github.com/atotto/clipboard"
 )
 
 type PasswGenCharType int
@@ -104,11 +106,12 @@ type PasswGen struct {
 	MinSize        int
 	MaxSize        int
 	IgnoredChars   []byte
+	CopyClipboard  bool
 }
 
 func (psg PasswGen) Validate() PasswGen {
 	if psg.MinSize <= 0 || psg.MaxSize <= 0 {
-		fmt.Printf("The size of the password should be a positive integrer.\n")
+		fmt.Printf("The size of the password should be a positive integer.\n")
 		fmt.Printf("Changing the password length to a random number between 8 and 16.\n\n")
 		psg.MinSize = 8
 		psg.MaxSize = 16
@@ -158,6 +161,12 @@ func (psg PasswGen) Generate() string {
 
 	for i := range password {
 		password[i] = availableChars[rand.Intn(int(len(availableChars)))]
+	}
+
+	if psg.CopyClipboard {
+		clipboard.WriteAll(string(password))
+	} else {
+		fmt.Printf("Generated password:\n%v\n", string(password))
 	}
 
 	return string(password)
