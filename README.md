@@ -4,6 +4,7 @@
 $ ./passwgen-go --help
 Usage of ./passwgen-go:
   -c, --characters="1aA%": Allowed characters type on the password
+  -C, --clipboard=false: Copy the generated password to the clipboard instead of printing it
   -i, --ignored="": Characters ignored in the creation of the password
   -l, --length=-1: Fixed length of the password (overwrites 'min' and 'max' flags)
   -M, --max=16: Maximum size of the password
@@ -93,4 +94,16 @@ $ passwgen-go -l 50
 * Generates a password with fixed length of 6 with only numbers
 ```
 $ passwgen-go -l 6 -c "1"
+```
+
+## Clipboard
+
+The generated password can be given to the user with two different forms:
+
+* By printing it into the console (default);
+* By transferring it into the clipboard.
+
+In order to copy the password into the clipboard, you may use the `-C` flag, as shown below:
+```
+$ passwgen-go -C
 ```

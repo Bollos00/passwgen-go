@@ -41,7 +41,7 @@ func initFlags() passwgen.PasswGen {
 	var ignoredChars *string = flag.StringP("ignored", "i", "",
 		"Characters ignored in the creation of the password")
 	var copyClipboard *bool = flag.BoolP("clipboard", "C", false,
-		"Copy the generated password to the clipboard and do not print it")
+		"Copy the generated password to the clipboard instead of printing it")
 
 	flag.Parse()
 
